@@ -1,0 +1,10 @@
+version: "3.9"
+services:
+  postgres:
+    image: postgres:alpine3.19
+    env_file:
+      - .env
+    environment:
+      POSTGRES_DB: "postapp-dev"
+    ports:
+      - "5432:5432"
