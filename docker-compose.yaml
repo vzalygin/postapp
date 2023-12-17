@@ -5,6 +5,12 @@ services:
     env_file:
       - .env
     environment:
-      POSTGRES_DB: "postapp-dev"
+      POSTGRES_DB: "postapp"
+      PGDATA: "/var/lib/postgresql/data/pgdata"
+    volumes:
+      - postapp-data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
+
+volumes:
+  postapp-data:
