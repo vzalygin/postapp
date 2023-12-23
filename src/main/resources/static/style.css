@@ -1,0 +1,32 @@
+.navbar-self {
+    padding: 15px;
+}
+
+.hor {
+    display: flex;
+}
+
+.row-links {
+    padding-top: 10px;
+}
+
+.post-link {
+    font-size: small;
+}
+
+.liked-btn {
+    background-color: #ea5959;
+}
+
+.feed {
+    margin-top: 100px;
+    width: 70%;
+    margin-left: 30%;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.post-card {
+    margin: 30px;
+}
