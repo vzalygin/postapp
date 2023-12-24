@@ -2,6 +2,7 @@ let user = {
     login: "vzalygin",
     name: "Vyacheslav Zalygin",
 };
+// let user = null;
 
 const isAuthorized = () => {
     return user !== null;
@@ -20,7 +21,7 @@ const logOut = () => {
 };
 
 const users = [
-   user,
+   makeUser("vzalygin", "Vyacheslav Zalygin"),
    makeUser("johndoe", "John Doe") 
 ]
 

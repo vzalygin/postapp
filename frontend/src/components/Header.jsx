@@ -3,13 +3,14 @@ import {
     user,
     isAuthorized,
 } from "../service/user";
+import { Link } from 'react-router-dom';
 
 const Header = () => {
     const postButton = (() => {
         if (isAuthorized()) {
-            return <button className="btn btn-primary my-2 my-lg-0" href="/post">Написать пост</button>
+            return <Link to={"/post/new"} className="btn btn-primary my-2 my-lg-0">Написать пост</Link>
         } else {
-            return <button className="btn btn-primary my-2 my-lg-0" href="/post" disabled>Написать пост</button>
+            return <Link to={"/login"} className="btn btn-primary my-2 my-lg-0">Написать пост (Авторизация)</Link>
         }
     })()
 
@@ -17,18 +18,18 @@ const Header = () => {
         if (isAuthorized()) {
             return (
                 <React.Fragment>
-                    <button className="btn btn-link">{user.name}</button>
+                    <Link to={`/${user.login}`} className="btn btn-link">{user.name}</Link>
                     <button className="btn btn-outline-danger">Выйти</button>
                 </React.Fragment>
             )
         } else {
-            return <button className="btn btn-primary" href="/login">Авторизоваться</button>
+            return <Link to={"/login"} className="btn btn-primary" href="/login">Авторизоваться</Link>
         }
     })()
 
     return (
         <nav className="navbar fixed-top navbar-self navbar-expand-lg navbar-dark bg-dark">
-            <a className="navbar-brand">Posting app</a>
+            <Link to={"/feed"} className="navbar-brand">Posting app</Link>
             <div className="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul className="navbar-nav mr-auto">
                     {profileDropdown}

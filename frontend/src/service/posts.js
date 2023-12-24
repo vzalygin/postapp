@@ -1,5 +1,5 @@
 import {
-    user, makeUser
+    user, makeUser, getUserProfile
 } from "./user";
 
 const makePost = (id, author, creationDate, title, content, answerTo=null, answeredFrom=[], liked=false, isDeleted=false) => {
@@ -16,10 +16,10 @@ const makePost = (id, author, creationDate, title, content, answerTo=null, answe
     }
 };
 
-const posts = [
+export const posts = [
     makePost(
         "9165c789-bb94-414a-9666-2bf15f31bece", 
-        user, 
+        getUserProfile("vzalygin"), 
         "2023-12-12", 
         "Lorem Ipsum", 
         `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris efficitur felis a dapibus consectetur. Proin ultricies, urna non pulvinar sagittis, turpis risus dictum lorem, ac scelerisque tortor erat a eros. Donec sit amet ligula justo. Integer nec lectus in justo luctus faucibus ut vel enim. Nunc ligula augue, facilisis vitae nisl a, sagittis hendrerit nisl. Pellentesque sed ante non sem scelerisque elementum. Nulla semper velit a libero feugiat feugiat. Morbi ullamcorper velit eros, scelerisque sagittis massa maximus ac. Ut dictum nibh ut lacus vulputate tempus. Nullam augue tortor, viverra quis molestie a, finibus a nibh.`, 
@@ -29,7 +29,7 @@ const posts = [
         false
     ),
     makePost(
-        "e2cdad5d-ccba-464d-bbcc-88dd4c5d4293", 
+        "e2cdad6d-ccba-464d-bbcc-88dd4c5d4293", 
         makeUser("johndoe", "John Doe"), 
         "2024-12-13", 
         "Answer to \"Lorem Ipsum\"", 
@@ -40,7 +40,7 @@ const posts = [
         false
     ),
     makePost(
-        "e2cdad5d-ccba-464d-bbcc-88dd4c5d4293", 
+        "e2cdad1d-ccba-464d-bbcc-88dd4c5d4293", 
         makeUser("johndoe", "John Doe"), 
         "2024-12-13", 
         "Answer to \"Lorem Ipsum\"", 
@@ -51,7 +51,7 @@ const posts = [
         true
     ),
     makePost(
-        "e2cdad5d-ccba-464d-bbcc-88dd4c5d4293", 
+        "e2cdad3d-ccba-464d-bbcc-88dd4c5d4293", 
         makeUser("johndoe", "John Doe"), 
         "2024-12-13", 
         "Answer to \"Lorem Ipsum\"", 
@@ -63,8 +63,19 @@ const posts = [
     )
 ];
 
-const getPostById = (id) => {
+
+export const getPostById = (id) => {
     return posts.find(post => post.id === id)
 }
 
-export { posts, getPostById, makePost };
+export const setLikeOnPost = (id, value) => {
+    getPostById(id).liked = value
+};
+
+export const setDeletedOnPost = (id) => {
+    getPostById(id).isDeleted = true;
+}
+
+export const getPostsByAuthorLogin = (login) => {
+    return posts.filter(post => post.author.login == login);
+}

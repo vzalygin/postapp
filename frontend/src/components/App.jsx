@@ -19,11 +19,12 @@ const router = createBrowserRouter([
     element: <Post/>
   },
   {
-    path: "/user/:login",
-    element: <UserProfile/>
+    path: "/:login",
+    element: <UserProfile/>,
+    errorElement: <Navigate to="/feed" replace={true} />
   },
   {
-    path: "/",
+    path: "/*",
     element: <Navigate to="/feed" replace={true} />
   }
 ]);
@@ -31,7 +32,6 @@ const router = createBrowserRouter([
 const App = () => {
   return (
     <React.Fragment>
-        <Header/>
         <RouterProvider router={router} />
     </React.Fragment>
   );
