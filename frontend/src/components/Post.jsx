@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 import PostCard from './PostCard';
 import { getPostById } from '../service/posts';
 import { useParams } from 'react-router-dom';

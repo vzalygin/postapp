@@ -1,17 +1,22 @@
-import React, { Fragment } from 'react';
-import { useParams } from 'react-router-dom';
+import React, { Fragment, useContext } from 'react';
+import { Navigate, useParams } from 'react-router-dom';
 import Header from './Header';
-import { user, getUserProfile, isAuthorized } from '../service/user';
+import { UserContext, getUserProfile, isAuthorized } from '../service/user';
 import { getPostsByAuthorLogin } from '../service/posts';
 import PostCard from './PostCard';
 
 const UserProfile = () => {
+    const user = useContext(UserContext);
+
     const { login } = useParams();
     const userProfile = getUserProfile(login);
+    if (userProfile === undefined) {
+        return <Navigate to={"/feed"}/>
+    }
     const userPosts = getPostsByAuthorLogin(login);
 
     const meText = (()=>{
-        if(isAuthorized() && login == user.login) return "(me)";
+        if(isAuthorized() && login === user.login) return "(me)";
     })();
     return (
         <Fragment>
@@ -21,7 +26,6 @@ const UserProfile = () => {
                     <div className="card-body">
                         <div className="hor">
                             <h5 className="card-title">{userProfile.name} {meText}&emsp;&emsp;</h5>
-                            
                             <span className='font-weight-light'>@{userProfile.login}</span>
                         </div>
                     </div>

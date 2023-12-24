@@ -1,6 +1,7 @@
 import {
     user, makeUser, getUserProfile
 } from "./user";
+import { v4 as uuidv4 } from 'uuid';
 
 const makePost = (id, author, creationDate, title, content, answerTo=null, answeredFrom=[], liked=false, isDeleted=false) => {
     return {
@@ -24,7 +25,7 @@ export const posts = [
         "Lorem Ipsum", 
         `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris efficitur felis a dapibus consectetur. Proin ultricies, urna non pulvinar sagittis, turpis risus dictum lorem, ac scelerisque tortor erat a eros. Donec sit amet ligula justo. Integer nec lectus in justo luctus faucibus ut vel enim. Nunc ligula augue, facilisis vitae nisl a, sagittis hendrerit nisl. Pellentesque sed ante non sem scelerisque elementum. Nulla semper velit a libero feugiat feugiat. Morbi ullamcorper velit eros, scelerisque sagittis massa maximus ac. Ut dictum nibh ut lacus vulputate tempus. Nullam augue tortor, viverra quis molestie a, finibus a nibh.`, 
         null,
-        ["e2cdad5d-ccba-464d-bbcc-88dd4c5d4293"],
+        ["e2cdad6d-ccba-464d-bbcc-88dd4c5d4293", "e2cdad1d-ccba-464d-bbcc-88dd4c5d4293", "e2cdad3d-ccba-464d-bbcc-88dd4c5d4293"],
         false, 
         false
     ),
@@ -76,6 +77,17 @@ export const setDeletedOnPost = (id) => {
     getPostById(id).isDeleted = true;
 }
 
+export const createPost = (author, title, content, answerTo) => {
+    const id = uuidv4() 
+    posts.push(makePost(
+        id, author, new Date().toISOString(), title, content, answerTo, [], false, false
+    ));
+    const answered = posts.find(post => post.id === answerTo);
+    if (answered !== undefined) {
+        answered.answeredFrom.push(id)
+    }
+};
+
 export const getPostsByAuthorLogin = (login) => {
-    return posts.filter(post => post.author.login == login);
+    return posts.filter(post => post.author.login === login);
 }

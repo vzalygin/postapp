@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
-import { user, isAuthorized } from '../service/user';
+import React, { useContext, useState } from 'react';
+import { UserContext, isAuthorized } from '../service/user';
 import { Link } from 'react-router-dom';
 import { setLikeOnPost, setDeletedOnPost } from '../service/posts';
 
 const PostCard = ({id, author, creationDate, title, content, answerTo, answeredFrom, liked, isDeleted}) => {
+    const user = useContext(UserContext);
+
     const [state, setState] = useState({like: liked, isDeleted: isDeleted });
     const setLike = () => {
         const value = { like: !(state.like), isDeleted: state.isDeleted};
@@ -29,13 +31,13 @@ const PostCard = ({id, author, creationDate, title, content, answerTo, answeredF
     );
     
     const answerToBlock = (()=>{if(answerTo !== null)
-        return <Link to={`/post/${answerTo}`} className="btn btn-small font-weight-light post-link" >&lt; {answerTo}</Link>;
+        return <Link to={`/post/${answerTo}`} className="btn btn-small font-weight-light post-link" >&lt;= {answerTo}</Link>;
     })();
 
     const answeredFromBlock = 
         <div>
             {answeredFrom.map(answer => {
-                return <Link to={`/post/${answer}`} className="btn btn-sm font-weight-light post-link">&gt; {answer}</Link>;
+                return <Link to={`/post/${answer}`} className="btn btn-sm font-weight-light post-link">=&gt; {answer}</Link>;
             })}
         </div>;
 

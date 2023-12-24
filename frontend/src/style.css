@@ -31,3 +31,11 @@
 .post-card {
   margin: 30px;
 }
+
+.form-group {
+  padding: 10px;
+}
+
+body {
+  background-color: black;
+}
