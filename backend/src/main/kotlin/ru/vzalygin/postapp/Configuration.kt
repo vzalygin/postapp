@@ -24,7 +24,6 @@ class Configuration {
 
     @Bean
     fun userDetailsManager(dataSource: DataSource, passwordEncoder: PasswordEncoder): UserDetailsManager {
-//        val manager = JdbcUserDetailsManager(dataSource)
         val manager = InMemoryUserDetailsManager()
         val user = User
             .withUsername("user")
@@ -42,7 +41,7 @@ class Configuration {
             authorizeHttpRequests {
                 authorize("/", permitAll)
                 authorize("/static/**", permitAll)
-                authorize("/api/auth/singup", permitAll)
+                authorize("/api/auth/signup", permitAll)
                 authorize("/api/feed", permitAll)
                 authorize("/api/user/*", permitAll)
                 authorize("/api/post/get/*", permitAll)
