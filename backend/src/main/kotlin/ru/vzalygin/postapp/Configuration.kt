@@ -1,4 +1,4 @@
-package ru.vzalygin.postapp.config
+package ru.vzalygin.postapp
 
 import org.springframework.boot.SpringBootConfiguration
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration
