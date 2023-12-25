@@ -14,26 +14,38 @@ import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.annotation.web.invoke
+import org.springframework.security.core.userdetails.User
+import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
+import org.springframework.security.provisioning.InMemoryUserDetailsManager
 import org.springframework.security.provisioning.JdbcUserDetailsManager
 import org.springframework.security.provisioning.UserDetailsManager
 import org.springframework.security.web.SecurityFilterChain
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
+import org.springframework.web.servlet.resource.VersionResourceResolver
 import ru.vzalygin.postapp.controller.AuthController
 import javax.sql.DataSource
 
 @SpringBootApplication
 @PropertySource("classpath:/config/postapp-config.yaml")
-@EnableWebSecurity
 class Configuration {
-    @Bean
-    fun userDetailsManager(dataSource: DataSource): UserDetailsManager =
-        JdbcUserDetailsManager(dataSource)
-
     @Bean
     fun passwordEncoder(): PasswordEncoder =
         BCryptPasswordEncoder(16)
+
+    @Bean
+    fun userDetailsManager(passwordEncoder: PasswordEncoder): UserDetailsManager {
+        val user = User
+            .withUsername("user")
+            .password("password")
+            .roles("USER")
+            .passwordEncoder(passwordEncoder::encode)
+            .build()
+
+        return InMemoryUserDetailsManager(listOf(user))
+    }
 
     @Bean
     fun filterChain(http: HttpSecurity): SecurityFilterChain {
@@ -41,10 +53,7 @@ class Configuration {
             authorizeHttpRequests {
                 authorize(anyRequest, permitAll)
             }
-            httpBasic {}
-            csrf {
-                disable()
-            }
+            httpBasic { }
         }
         return http.build()
     }
