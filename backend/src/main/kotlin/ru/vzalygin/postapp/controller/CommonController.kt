@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RestController
 import ru.vzalygin.postapp.data.post.Post
 import ru.vzalygin.postapp.data.user.User
 
-@RestController()
+@RestController("/api")
 class CommonController {
     @GetMapping("/api/feed")
     fun feed(): List<Post> {
