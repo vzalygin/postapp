@@ -17,7 +17,7 @@ const UserProfile = () => {
     const userPosts = getPostsByAuthorLogin(login);
 
     const meText = (()=>{
-        if(isAuthorized() && login === user.login) return "(me)";
+        if(isAuthorized(authContext) && login === user.login) return "(me)";
     })();
     return (
         <Fragment>

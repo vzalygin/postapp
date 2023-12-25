@@ -1,7 +1,7 @@
 import Feed from "./Feed";
 import Post from "./Post";
 import {
-  createBrowserRouter,
+  createHashRouter,
   Navigate,
   RouterProvider,
 } from "react-router-dom";
@@ -16,7 +16,7 @@ import { action as signupAction } from "./SignupForm";
 import { AuthContext, setState } from "../service/user";
 import { useState } from "react";
 
-const router = createBrowserRouter([
+const router = createHashRouter([
   {
     path: "/feed",
     element: <Feed />,
@@ -43,7 +43,6 @@ const router = createBrowserRouter([
   {
     path: "/:login",
     element: <UserProfile/>,
-    errorElement: <Navigate to="/feed" replace={true} />
   },
   {
     path: "/",
