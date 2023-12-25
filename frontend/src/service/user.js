@@ -1,33 +1,33 @@
-import { useContext } from "react";
+import { createContext } from "react";
 
-export const isAuthorized = () => {
-    return useContext(UserContext) !== null;
-};
-
+// Data source
 export const makeUser = (login, name) => {
-    return { login: login, name: name }
-};
-
-export const logIn = (login, name) => {
-    useContext(UserContext) = makeUser(login, name)
-};
-
-export const logOut = () => {
-    useContext(UserContext) = null;
+    return { login: login, name: name };;
 };
 
 export const users = [
-   makeUser("vzalygin", "Vyacheslav Zalygin"),
-   makeUser("johndoe", "John Doe") 
-]
+    makeUser("vzalygin", "Vyacheslav Zalygin"),
+    makeUser("johndoe", "John Doe") 
+];
+ 
+ export const getUserProfile = (login) => {
+     return users.find(user => user.login === login);
+ };
 
-export const getUserProfile = (login) => {
-    return users.find(user => user.login === login);
+ // Auth
+export const isAuthorized = (context) => {
+    const { user, _  } = context;
+    return user !== null;
 };
 
-export const setUser = (profile) => {
-    const {user, setUser } = useContext(UserContext);
-    setUser(profile);
-}
+export const logIn = (context, login, name) => {
+    const { _, setUser  } = context;
+    setUser(makeUser(login, name))
+};
 
-export const UserContext = useContext(user);
+export const logOut = (context) => {
+    const { _, setUser  } = context;
+    setUser(null);
+};
+
+export const AuthContext = createContext(null);

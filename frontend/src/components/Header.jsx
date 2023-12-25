@@ -1,30 +1,29 @@
 import React, { useContext } from 'react';
 import {
-    UserContext,
-    isAuthorized,
-    setUser
+    AuthContext,
+    isAuthorized, 
 } from "../service/user";
 import { Link } from 'react-router-dom';
 
-const logout = () => {
-    console.log("jopa");
-    setUser(null);
-}
-
 const Header = () => {
-    // const { state, }
+    const authContext = useContext(AuthContext);
+    const { user, setUser } = authContext;
+
+    const logout = () => {
+        console.log("jopa");
+        setUser(null);
+    }
 
     const postButton = (() => {
-        if (isAuthorized()) {
+        if (isAuthorized(authContext)) {
             return <Link to={"/post/new"} className="btn btn-primary my-2 my-lg-0">Написать пост</Link>
         } else {
             return <Link to={"/login"} className="btn btn-primary my-2 my-lg-0">Написать пост (Авторизация)</Link>
         }
     })()
 
-    const profileDropdown = (() => {
-        const user = useContext(UserContext);
-        if (isAuthorized()) {
+    const profileDropdown = (() => {  
+        if (isAuthorized(authContext)) {
             return (
                 <React.Fragment>
                     <Link to={`/${user.login}`} className="btn btn-link">{user.name}</Link>

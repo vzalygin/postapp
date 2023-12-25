@@ -1,10 +1,11 @@
 import React, { useContext, useState } from 'react';
-import { UserContext, isAuthorized } from '../service/user';
+import { AuthContext, isAuthorized } from '../service/user';
 import { Link } from 'react-router-dom';
 import { setLikeOnPost, setDeletedOnPost } from '../service/posts';
 
 const PostCard = ({id, author, creationDate, title, content, answerTo, answeredFrom, liked, isDeleted}) => {
-    const user = useContext(UserContext);
+    const authContext = useContext(AuthContext);
+    const { user, _ } = authContext;
 
     const [state, setState] = useState({like: liked, isDeleted: isDeleted });
     const setLike = () => {
@@ -25,7 +26,7 @@ const PostCard = ({id, author, creationDate, title, content, answerTo, answeredF
             <h6 className="font-weight-light row-links">{creationDate}</h6>
             <Link to={`/post/${id}`} className="btn btn-small font-weight-light post-link">{id}</Link>
             <Link to={`/${author.login}`} className="btn btn-link btn-sm">
-                @{author.name} {(() => {if(isAuthorized() && author.login === user.login){return"(me)";}else{return;}})()}
+                @{author.name} {(() => {if(isAuthorized(authContext) && author.login === user.login){return"(me)";}else{return;}})()}
             </Link>
         </div>
     );
@@ -49,7 +50,7 @@ const PostCard = ({id, author, creationDate, title, content, answerTo, answeredF
         }
     })();
 
-    const deleteButtonComponent = (()=>{if(isAuthorized() && author.login === user.login) {
+    const deleteButtonComponent = (()=>{if(isAuthorized(authContext) && author.login === user.login) {
         return <button type="button" className="btn btn-outline-danger" onClick={setDeleted}>🗑️</button>;
     }})();
 

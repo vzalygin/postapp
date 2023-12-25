@@ -1,18 +1,24 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import Header from './Header';
 import { Form, Link, redirect } from 'react-router-dom';
-import { setUser, getUserProfile } from "./../service/user"
+import { getUserProfile, AuthContext } from "./../service/user"
+
+// Ensure that action func will be called only after NewPostForm component call
+let kostyl = null;
 
 export const action = async ({ request }) => {
     const formData = await request.formData()
     const login = formData.get("login");
-    const passowrd = formData.get("password");
+    const password = formData.get("password");
     const profile = getUserProfile(login);
-    setUser(profile);
+    kostyl(profile);
     return redirect("/feed");
 };
 
 const LoginForm = () => {
+    const { user, setUser } = useContext(AuthContext);
+    kostyl = setUser;
+
     return (
         <React.Fragment>
             <Header/>

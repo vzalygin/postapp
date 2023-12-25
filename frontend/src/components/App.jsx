@@ -9,10 +9,12 @@ import * as React from 'react';
 import UserProfile from "./UserProfile";
 import NewPostForm from "./NewPostForm";
 import LoginForm from "./LoginForm";
+import SignupForm from "./SignupForm";
 import { action as newPostAction } from "./NewPostForm";
 import { action as loginAction } from "./LoginForm";
-import { useContext } from "react";
-import { user, UserContext } from "../service/user";
+import { action as signupAction } from "./SignupForm";
+import { AuthContext, setState } from "../service/user";
+import { useState } from "react";
 
 const router = createBrowserRouter([
   {
@@ -34,6 +36,11 @@ const router = createBrowserRouter([
     element: <LoginForm />
   },
   {
+    path: "/signup",
+    action: signupAction,
+    element: <SignupForm />
+  },
+  {
     path: "/:login",
     element: <UserProfile/>,
     errorElement: <Navigate to="/feed" replace={true} />
@@ -45,11 +52,13 @@ const router = createBrowserRouter([
 ]);
 
 const App = () => {
+  const [user, setUser] = useState(null);
+
   return (
     <React.Fragment>
-        <UserContext.Provider>
+        <AuthContext.Provider value={{user, setUser}}>
           <RouterProvider router={router} />
-        </UserContext.Provider>
+        </AuthContext.Provider>
     </React.Fragment>
   );
 }
