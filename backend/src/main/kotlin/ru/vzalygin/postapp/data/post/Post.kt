@@ -11,5 +11,5 @@ data class Post(
     val content: String,
     val answerTo: UUID? = null,
     val answeredFrom: List<UUID> = listOf(),
-    val idDeleted: Boolean,
+    val isDeleted: Boolean,
 )

@@ -5,11 +5,9 @@ import java.util.*
 
 @Entity
 data class LikeDAO(
-    @OneToOne(cascade = [CascadeType.ALL])
-    @PrimaryKeyJoinColumn
+    @OneToOne(cascade = [CascadeType.PERSIST])
     val post: PostDAO,
-    @OneToOne(cascade = [CascadeType.ALL])
-    @PrimaryKeyJoinColumn
+    @OneToOne(cascade = [CascadeType.PERSIST])
     val user: UserDAO,
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)

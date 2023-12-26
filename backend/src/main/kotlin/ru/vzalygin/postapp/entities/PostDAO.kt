@@ -9,7 +9,7 @@ import java.util.*
 data class PostDAO(
     @Id
     val id: UUID,
-    @ManyToOne(cascade = [CascadeType.ALL])
+    @ManyToOne(cascade = [CascadeType.PERSIST])
     @PrimaryKeyJoinColumn
     val author: UserDAO,
     @Column(nullable = false)

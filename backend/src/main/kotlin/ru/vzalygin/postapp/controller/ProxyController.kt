@@ -15,7 +15,7 @@ class ProxyController {
         return restTemplate.getForObject(URI.create(base), String::class.java)!!
     }
 
-    @GetMapping("/static/{*name}")
+    @GetMapping("/static/{type}/{name}")
     fun static(@PathVariable type: String, @PathVariable name: String): String {
         val headers = HttpHeaders().apply {
             set("Content-type", when (type) {
@@ -25,7 +25,7 @@ class ProxyController {
             })
         }
         val entity = HttpEntity<String>(headers)
-        return restTemplate.exchange(URI.create("$base/static/$name"), HttpMethod.GET, entity, String::class.java).body!!
+        return restTemplate.exchange(URI.create("$base/static/$type/$name"), HttpMethod.GET, entity, String::class.java).body!!
     }
 
     @RequestMapping(value = ["/static/js/{name}"], method = [RequestMethod.GET], produces=["text/javascript; charset=utf-8"])
@@ -38,7 +38,7 @@ class ProxyController {
     }
 
     companion object {
-        val base = "http://localhost:8000"
+        val base = "http://localhost:3000"
         val restTemplate = RestTemplate()
     }
 }

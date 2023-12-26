@@ -17,15 +17,19 @@ class PostService(
     val likeRepository: LikeRepository
 ) {
     fun getFeed(): List<Post> {
-        return postRepository.findAll().map { fromDao(it) }
+        return postRepository.findAll().map { fromDao(it) }.sortedBy { it.creationDate }.reversed()
     }
 
     fun getUsersPosts(user: UserDAO): List<Post> {
         return postRepository.findAllByAuthor(user).map { fromDao(it) }
     }
 
-    fun getPostByIdOrNull(id: UUID): PostDAO? {
+    fun getPostDAOByIdOrNull(id: UUID): PostDAO? {
         return postRepository.findByIdOrNull(id)
+    }
+
+    fun getPostByIdOrNull(id: UUID): Post? {
+        return getPostDAOByIdOrNull(id)?.let { fromDao(it) }
     }
 
     fun createPost(author: UserDAO, createPostIntent: CreatePostIntent): UUID {
@@ -37,7 +41,7 @@ class PostService(
             createPostIntent.title,
             createPostIntent.content,
             false,
-            UUID.fromString(createPostIntent.answerTo)
+            createPostIntent.answerTo?.let { UUID.fromString(it) }
         )
         postRepository.save(post)
         return id
@@ -51,8 +55,8 @@ class PostService(
                 id = post.id,
                 author = post.author,
                 creationDate = post.creationDate,
-                title = post.title,
-                content = post.content,
+                title = "",
+                content = "",
                 isDeleted = true,
                 answerTo = post.answerTo
             )
