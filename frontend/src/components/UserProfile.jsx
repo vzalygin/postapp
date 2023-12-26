@@ -1,8 +1,7 @@
-import React, { Fragment, useContext } from 'react';
+import React, { Fragment, useContext, useState, useEffect} from 'react';
 import { Navigate, useParams } from 'react-router-dom';
 import Header from './Header';
 import { AuthContext, getUserProfile, isAuthorized } from '../service/user';
-import { getPostsByAuthorLogin } from '../service/posts';
 import PostCard from './PostCard';
 
 const UserProfile = () => {
@@ -10,19 +9,24 @@ const UserProfile = () => {
     const { user, _ } = authContext;
 
     const { login } = useParams();
-    const userProfile = getUserProfile(login);
-    if (userProfile === undefined) {
-        return <Navigate to={"/feed"}/>
-    }
-    const userPosts = getPostsByAuthorLogin(login);
+    const [ profile, setProfle ] = useState(null);
+    useEffect(() => {
+        getUserProfile(login, (data) => {
+            setProfle(data);
+        })
+    }, []);
 
     const meText = (()=>{
         if(isAuthorized(authContext) && login === user.login) return "(me)";
     })();
-    return (
-        <Fragment>
-            <Header/>
-            <main className="container">
+    
+    let profileBlock = null;
+    if (profile === null) {
+        profileBlock = <h4>Загрузка</h4>
+    } else {
+        const userProfile = profile.first
+        const userPosts = profile.second
+        profileBlock = <Fragment>
                 <div className="card w-50 post-card">
                     <div className="card-body">
                         <div className="hor">
@@ -42,6 +46,14 @@ const UserProfile = () => {
                     liked={post.liked}
                     isDeleted={post.isDeleted}
                 />)}
+        </Fragment>
+    }
+
+    return (
+        <Fragment>
+            <Header/>
+            <main className="container">
+                {profileBlock}
             </main>
         </Fragment>
     );

@@ -1,7 +1,7 @@
+import { with_auth, with_auth2, with_base } from "./network";
 import {
     user, makeUser, getUserProfile
 } from "./user";
-import { v4 as uuidv4 } from 'uuid';
 
 const makePost = (id, author, creationDate, title, content, answerTo=null, answeredFrom=[], liked=false, isDeleted=false) => {
     return {
@@ -17,7 +17,7 @@ const makePost = (id, author, creationDate, title, content, answerTo=null, answe
     }
 };
 
-export const posts = [
+const posts = [
     makePost(
         "9165c789-bb94-414a-9666-2bf15f31bece", 
         getUserProfile("vzalygin"), 
@@ -64,30 +64,73 @@ export const posts = [
     )
 ];
 
+export const getPostsWithLikes = (user, setCallback) => {
+    fetch(with_base("/api/feed"), {
+        method: 'GET',
+    })
+    .then((response) => response.json())
+    .then((data) => {
+        console.log(data);
+        setCallback(data);
+    })
+} 
 
-export const getPostById = (id) => {
-    return posts.find(post => post.id === id)
+
+export const getPostById = (id, setCallback) => {
+    fetch(with_base(`/api/post/get/${id}`), {
+        method: 'GET'
+    })
+    .then((response) => response.json())
+    .then((data) => {
+        console.log(data);
+        setCallback(data);
+    })
 }
 
-export const setLikeOnPost = (id, value) => {
-    getPostById(id).liked = value
+export const setLikeOnPost = (user, id) => {
+    
 };
 
-export const setDeletedOnPost = (id) => {
-    getPostById(id).isDeleted = true;
+export const setDeletedOnPost = (user, id) => {
+    var myHeaders = new Headers();
+    myHeaders.append("Authorization", "Basic " + btoa(`${user.login}:${user.password}`));
+    
+    var requestOptions = {
+      method: 'DELETE',
+      headers: myHeaders,
+      redirect: 'follow'
+    };
+    
+    fetch("http://localhost:8081/api/post/delete/"+id, requestOptions)
+      .then(response => response.text())
+      .then(result => console.log(result))
+      .catch(error => console.log('error', error));
 }
 
 export const createPost = (author, title, content, answerTo) => {
-    const id = uuidv4() 
-    posts.push(makePost(
-        id, author, new Date().toISOString(), title, content, answerTo, [], false, false
-    ));
-    const answered = posts.find(post => post.id === answerTo);
-    if (answered !== undefined) {
-        answered.answeredFrom.push(id)
-    }
-};
+    const postIntent = {title, content, answerTo};
+    console.log(postIntent);
 
-export const getPostsByAuthorLogin = (login) => {
-    return posts.filter(post => post.author.login === login);
-}
+    var myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+    console.log(btoa(`${author.login}:${author.password}`))
+    myHeaders.append("Authorization", "Basic " + btoa(`${author.login}:${author.password}`));
+    
+    var raw = JSON.stringify({
+      "title": title,
+      "content": content,
+      "answerTo": answerTo,
+    });
+    
+    var requestOptions = {
+      method: 'POST',
+      headers: myHeaders,
+      body: raw,
+      redirect: 'follow'
+    };
+    
+    fetch("http://localhost:8081/api/post/create", requestOptions)
+      .then(response => response.text())
+      .then(result => console.log(result))
+      .catch(error => console.log('error', error));
+};

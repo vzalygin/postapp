@@ -1,7 +1,8 @@
 import React, { useContext } from 'react';
 import Header from './Header';
 import { Form, Link, redirect } from 'react-router-dom';
-import { getUserProfile, AuthContext } from "./../service/user"
+import { getUserProfile, AuthContext, makeUser, validate } from "./../service/user"
+import { with_base, with_auth } from '../service/network';
 
 // Ensure that action func will be called only after NewPostForm component call
 let kostyl = null;
@@ -10,9 +11,25 @@ export const action = async ({ request }) => {
     const formData = await request.formData()
     const login = formData.get("login");
     const password = formData.get("password");
-    const profile = getUserProfile(login);
-    kostyl(profile);
-    return redirect("/feed");
+    const profile = makeUser(login, null, password)
+    
+    console.log(profile)
+    var myHeaders = new Headers();
+    myHeaders.append("Authorization", "Basic " + btoa(`${profile.login}:${profile.password}`));
+    console.log(myHeaders)
+    const response = await fetch(with_base("/api/auth/validate"), {
+        method: 'GET',
+        headers:myHeaders,
+    })
+    console.log(response)
+    if (response.ok) {
+        kostyl(makeUser(login, await response.text(), password))
+        return redirect("/feed");
+    } else {
+        console.log(await response.text());
+        window.alert("Пользователь не найден!");
+        return null;
+    }
 };
 
 const LoginForm = () => {
@@ -35,7 +52,7 @@ const LoginForm = () => {
                         </div>
                         <div className="col-auto">
                             <label className="sr-only" htmlFor="inlineFormInput">Пароль</label>
-                            <input password="password" type="password" className="form-control mb-2" id="passwordInput" placeholder="Пароль" required/>
+                            <input name="password" type="password" className="form-control mb-2" id="passwordInput" placeholder="Пароль" required/>
                         </div>
                     </div>
                     <div className="col-auto hor">

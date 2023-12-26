@@ -16,7 +16,7 @@ const PostCard = ({id, author, creationDate, title, content, answerTo, answeredF
     const setDeleted = () => {
         if (window.confirm("Вы уверены, что хотите удалить пост?")) {
             const value = { like: state.like, isDeleted: true };
-            setDeletedOnPost(id);
+            setDeletedOnPost(user, id);
             setState(value);
         }
     }
@@ -59,7 +59,7 @@ const PostCard = ({id, author, creationDate, title, content, answerTo, answeredF
                         <h5 className="card-title">{title}</h5>
                         <p className="card-text">{content}</p>
                         <div className="btn-group btn-group-sm" role="group" aria-label="Basic example">
-                            {likeButtonComponent}
+                            {/* {likeButtonComponent} */}
                             <Link to={`/post/new?answerTo=${id}`} type="button" className="btn btn-light">↪️</Link>
                             {deleteButtonComponent}
                         </div>

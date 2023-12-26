@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import Header from './Header';
 import { Form, Link, redirect } from 'react-router-dom';
-import { getUserProfile, AuthContext, makeUser } from "../service/user"
+import { getUserProfile, AuthContext, makeUser, signup } from "../service/user"
 
 // Ensure that action func will be called only after NewPostForm component call
 let kostyl = null;
@@ -26,8 +26,9 @@ export const action = async ({ request }) => {
         return null;
     }
 
-    const profile = makeUser(login, name);
+    const profile = makeUser(login, name, password);
     kostyl(profile);
+    signup(profile)
 
     return redirect("/feed");
 };
