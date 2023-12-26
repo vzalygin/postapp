@@ -2,9 +2,11 @@ import React, { useContext, useState } from 'react';
 import { AuthContext, isAuthorized } from '../service/user';
 import { Link } from 'react-router-dom';
 import { setLikeOnPost, setDeletedOnPost } from '../service/posts';
+import { DELETE_WARNING, LocaleContext, ME, POST_WAS_REMOVED, i18n } from '../service/loc';
 
 const PostCard = ({id, author, creationDate, title, content, answerTo, answeredFrom, liked, isDeleted}) => {
     const authContext = useContext(AuthContext);
+    const locContext = useContext(LocaleContext);
     const { user, _ } = authContext;
 
     const [state, setState] = useState({like: liked, isDeleted: isDeleted });
@@ -14,7 +16,7 @@ const PostCard = ({id, author, creationDate, title, content, answerTo, answeredF
         setState(value)
     };
     const setDeleted = () => {
-        if (window.confirm("Вы уверены, что хотите удалить пост?")) {
+        if (window.confirm(i18n(locContext, DELETE_WARNING))) {
             const value = { like: state.like, isDeleted: true };
             setDeletedOnPost(user, id);
             setState(value);
@@ -23,16 +25,16 @@ const PostCard = ({id, author, creationDate, title, content, answerTo, answeredF
 
     const metaBlock =(
         <div className="container-fluid hor">
-            <h6 className="font-weight-light row-links">{creationDate}</h6>
-            <Link to={`/post/${id}`} className="btn btn-small font-weight-light post-link">{id}</Link>
+            <small className="font-weight-light row-links">{creationDate.substring(0, 10+9)}</small>
+            <Link to={`/postred?id=${id}`} className="btn btn-small font-weight-light post-link">{id}</Link>
             <Link to={`/${author.login}`} className="btn btn-link btn-sm">
-                @{author.name} {(() => {if(isAuthorized(authContext) && author.login === user.login){return"(me)";}else{return;}})()}
+                @{author.name} {(() => {if(isAuthorized(authContext) && author.login === user.login){return i18n(locContext, ME);}else{return;}})()}
             </Link>
         </div>
     );
     
     const answerToBlock = (()=>{if(answerTo !== null)
-        return <Link to={`/post/${answerTo}`} className="btn btn-small font-weight-light post-link" >&lt;= {answerTo}</Link>;
+        return <Link to={`/postred?id=${answerTo}`} className="btn btn-small font-weight-light post-link" >&lt;= {answerTo}</Link>;
     })();
 
     const answeredFromBlock = 
@@ -65,7 +67,7 @@ const PostCard = ({id, author, creationDate, title, content, answerTo, answeredF
                         </div>
                     </React.Fragment>
         } else {
-            return <h5 className="card-title">Пост был удален.</h5>
+            return <h5 className="card-title">{i18n(locContext, POST_WAS_REMOVED)}</h5>
     }})();
 
     return (
