@@ -12,6 +12,7 @@ import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.provisioning.InMemoryUserDetailsManager
 import org.springframework.security.provisioning.UserDetailsManager
 import org.springframework.security.web.SecurityFilterChain
+import org.springframework.security.web.authentication.www.BasicAuthenticationEntryPoint
 import javax.sql.DataSource
 
 @SpringBootApplication
@@ -38,10 +39,13 @@ class Configuration {
     @Bean
     fun filterChain(http: HttpSecurity): SecurityFilterChain {
         http {
+            httpBasic { }
+            csrf { disable() }
             authorizeHttpRequests {
                 authorize("/", permitAll)
                 authorize("/static/**", permitAll)
                 authorize("/api/auth/signup", permitAll)
+                authorize("/api/auth/validate", hasRole(USER_ROLE))
                 authorize("/api/feed", permitAll)
                 authorize("/api/user/*", permitAll)
                 authorize("/api/post/get/*", permitAll)
@@ -50,9 +54,6 @@ class Configuration {
                 authorize("/api/post/like/*", hasRole(USER_ROLE))
                 authorize("/api/post/ping", hasRole(USER_ROLE))
             }
-            httpBasic { }
-            formLogin { loginPage = "/login" }
-            csrf { disable() }
         }
         return http.build()
     }

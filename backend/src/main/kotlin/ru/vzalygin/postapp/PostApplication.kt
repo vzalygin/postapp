@@ -13,8 +13,7 @@ class PostApplication {
 	@Bean
 	fun demo(repository: UserRepository): CommandLineRunner {
 		return CommandLineRunner { args: Array<String?>? ->
-			// save a few customers
-			repository.save(UserDAO("Jack Bauer", "bauer"))
+			// repository.save(UserDAO("Jack Bauer", "bauer"))
 		}
 	}
 }
