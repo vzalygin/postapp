@@ -34,13 +34,13 @@ const PostCard = ({id, author, creationDate, title, content, answerTo, answeredF
     );
     
     const answerToBlock = (()=>{if(answerTo !== null)
-        return <Link to={`/postred?id=${answerTo}`} className="btn btn-small font-weight-light post-link" >&lt;= {answerTo}</Link>;
+        return <Link to={`/postred?id=${answerTo}`} target="_blank" rel="noopener noreferrer" className="btn btn-small font-weight-light post-link" >&lt;= {answerTo}</Link>;
     })();
 
     const answeredFromBlock = 
         <div>
             {answeredFrom.map(answer => {
-                return <Link to={`/post/${answer}`} className="btn btn-sm font-weight-light post-link">=&gt; {answer}</Link>;
+                return <Link to={`/post/${answer}`} target="_blank" rel="noopener noreferrer" className="btn btn-sm font-weight-light post-link">=&gt; {answer}</Link>;
             })}
         </div>;
 
