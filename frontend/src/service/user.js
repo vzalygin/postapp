@@ -3,8 +3,8 @@ import { with_auth, with_base } from "./network";
 import { encode } from "base-64";
 
 // Data source
-export const makeUser = (login, name, password) => {
-    return { login: login, name: name, password: password };;
+export const makeUser = (login, name, token) => {
+    return { login: login, name: name, password: token };;
 };
  
 export const getUserProfile = (login, setCallback) => {
