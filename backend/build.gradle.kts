@@ -34,6 +34,10 @@ dependencies {
 	// https://mvnrepository.com/artifact/com.h2database/h2
 	runtimeOnly("com.h2database:h2:2.2.224")
 
+	// https://mvnrepository.com/artifact/org.postgresql/postgresql
+	// implementation("org.postgresql:postgresql:42.7.1")
+
+
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("org.springframework.security:spring-security-test")
 }

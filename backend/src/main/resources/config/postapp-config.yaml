@@ -7,6 +7,3 @@ spring.datasource.username=sa
 spring.datasource.password=password
 
 server.port=8081
-
-#spring.flyway.schemas=public
-#spring.flyway.locations=classpath:/migrations
