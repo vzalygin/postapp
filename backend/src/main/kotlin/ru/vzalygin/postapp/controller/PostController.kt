@@ -1,50 +1,65 @@
 package ru.vzalygin.postapp.controller
 
-import org.springframework.security.access.annotation.Secured
-import org.springframework.web.bind.annotation.DeleteMapping
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.PutMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RestController
-import ru.vzalygin.postapp.USER_ROLE
+import org.springframework.security.core.Authentication
+import org.springframework.web.bind.annotation.*
 import ru.vzalygin.postapp.data.post.CreatePostIntent
-import ru.vzalygin.postapp.data.post.EditPostIntent
 import ru.vzalygin.postapp.data.post.Post
+import ru.vzalygin.postapp.entities.PostDAO
 import ru.vzalygin.postapp.service.PostService
-import java.util.UUID
+import ru.vzalygin.postapp.service.UserService
+import java.util.*
 
-@RestController("/api/post")
+@RestController
+@RequestMapping("/api/post")
 class PostController(
-    postService: PostService
+    val userService: UserService,
+    val postService: PostService
 ) {
     @GetMapping("/get/{id}")
-    fun get(@PathVariable id: UUID): Result<Post> {
-        TODO()
+    fun get(@PathVariable id: UUID): Post {
+        return postService.getPostByIdOrNull(id)!!
     }
 
     @PostMapping("/create")
-    @Secured(USER_ROLE)
-    fun create(@RequestBody post: CreatePostIntent): UUID {
-        TODO()
-    }
-
-    @PutMapping("/edit")
-    @Secured(USER_ROLE)
-    fun edit(@RequestBody editedPost: EditPostIntent): UUID {
-        TODO()
+    fun create(authentication: Authentication, @RequestBody post: CreatePostIntent): UUID {
+        // println(authentication.name)
+        // println(userService.getUserByLoginOrNull(authentication.name))
+        return postService.createPost(
+            userService.getUserByLoginOrNull(
+                authentication.name
+            )!!,
+            post
+        )
     }
 
     @DeleteMapping("/delete/{id}")
-    @Secured(USER_ROLE)
-    fun delete(@PathVariable id: UUID): Boolean {
-        TODO()
+    fun delete(@PathVariable id: UUID) {
+        postService.deletePost(id)
+    }
+
+    @PostMapping("/like/{id}")
+    fun likePost(authentication: Authentication, @PathVariable id: UUID) {
+        postService.likePost(
+            userService.getUserByLoginOrNull(
+                authentication.name
+            )!!,
+            postService.getPostDAOByIdOrNull(id)!!
+        )
+    }
+
+    @GetMapping("/like/{id}")
+    fun hasPostLike(authentication: Authentication, @PathVariable id: UUID): Boolean {
+        val user = userService.getUserByLoginOrNull(authentication.name)
+        val post = postService.getPostDAOByIdOrNull(id)
+        return if (user != null && post != null) {
+            postService.isPostHasLike(user, post)
+        } else {
+            false
+        }
     }
 
     @GetMapping("/ping")
-    @Secured(USER_ROLE)
-    fun ping(): String {
-        return "success"
+    fun ping(authentication: Authentication): String {
+        return authentication.name
     }
 }

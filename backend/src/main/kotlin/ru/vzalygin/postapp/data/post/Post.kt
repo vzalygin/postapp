@@ -1,13 +1,15 @@
 package ru.vzalygin.postapp.data.post
 
-import java.util.Date
-import java.util.UUID
+import ru.vzalygin.postapp.entities.UserDAO
+import java.util.*
 
 data class Post(
     val id: UUID,
-    val author: UUID,
+    val author: UserDAO,
+    val creationDate: Date,
     val title: String,
     val content: String,
-    val createdAt: Date,
-    val editedAt: Date,
+    val answerTo: UUID? = null,
+    val answeredFrom: List<UUID> = listOf(),
+    val isDeleted: Boolean,
 )

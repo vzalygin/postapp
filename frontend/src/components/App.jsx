@@ -1,7 +1,7 @@
 import Feed from "./Feed";
 import Post from "./Post";
 import {
-  createBrowserRouter,
+  createHashRouter,
   Navigate,
   RouterProvider,
 } from "react-router-dom";
@@ -13,10 +13,12 @@ import SignupForm from "./SignupForm";
 import { action as newPostAction } from "./NewPostForm";
 import { action as loginAction } from "./LoginForm";
 import { action as signupAction } from "./SignupForm";
-import { AuthContext, setState } from "../service/user";
+import { AuthContext, makeUser, setState } from "../service/user";
 import { useState } from "react";
+import { LocaleContext } from "../service/loc";
+import Kostyl from './Kostyl';
 
-const router = createBrowserRouter([
+const router = createHashRouter([
   {
     path: "/feed",
     element: <Feed />,
@@ -26,7 +28,7 @@ const router = createBrowserRouter([
     element: <Post />
   },
   {
-    path: "/post/new?",
+    path: "/post/new",
     action: newPostAction,
     element: <NewPostForm />
   },
@@ -43,22 +45,34 @@ const router = createBrowserRouter([
   {
     path: "/:login",
     element: <UserProfile/>,
-    errorElement: <Navigate to="/feed" replace={true} />
   },
   {
     path: "/",
     element: <Navigate to="/feed" replace={true} />
+  },
+  {
+    path: "/postred",
+    element: <Kostyl />
   }
 ]);
 
 const App = () => {
   const [user, setUser] = useState(null);
-
+  const [locale, setLocale] = useState("ru")
+  // console.log("cookie")
+  // console.log(document.cookie);
+  if (!(document.cookie === "" || document.cookie ==="token=") && user === null) {
+    const [token, login, name] = document.cookie.split("=")[1].split(':')
+    setUser(makeUser(login, name, token))
+  }
+  
   return (
     <React.Fragment>
+      <LocaleContext.Provider value={{locale, setLocale}}>
         <AuthContext.Provider value={{user, setUser}}>
           <RouterProvider router={router} />
         </AuthContext.Provider>
+      </LocaleContext.Provider>
     </React.Fragment>
   );
 }
